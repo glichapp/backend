@@ -1,0 +1,30 @@
+version: '3'
+
+vars:
+  MIGRATIONS: "database/migrations"
+  DOCKER_DEV: "docker-compose.dev.yaml"
+
+dotenv: [
+  ".env"
+]
+
+tasks:
+  docker-dev-up:
+    cmds:
+      - docker compose -f {{.DOCKER_DEV}} up -d
+
+  docker-dev-down:
+    cmds:
+      - docker compose -f {{.DOCKER_DEV}} down
+
+  migrations-new:
+    cmds:
+      - goose -dir {{.MIGRATIONS}} create migration sql
+
+  migrations-apply-all:
+    cmds:
+      - goose -dir {{.MIGRATIONS}} postgres $POSTGRES_URL up
+
+  migrations-rollback-all:
+    cmds:
+      - goose -dir {{.MIGRATIONS}} postgres $POSTGRES_URL reset

@@ -1,0 +1,11 @@
+version: '3'
+
+vars:
+  OAPI_CONFIG: "oapi-config.yaml"
+  OAPI_SPEC: "api/openapi-api-v1.yaml"
+
+tasks:
+  oapi-generate:
+    desc: "Generate server interface and models from OpenAPI specification."
+    cmds:
+      - go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen --config={{.OAPI_CONFIG}} {{.OAPI_SPEC}}

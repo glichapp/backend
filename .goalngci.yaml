@@ -1,0 +1,19 @@
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - typecheck
+    - unused
+    - asciicheck
+    - bidichk
+    - exportloopref
+    - forbidigo
+    - forcetypeassert
+    - goconst
+    - wsl
+    - whitespace
