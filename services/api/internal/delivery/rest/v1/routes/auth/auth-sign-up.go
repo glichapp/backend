@@ -7,14 +7,10 @@ import (
 	"github.com/kvizyx/glich/services/api/internal/delivery/rest/common"
 )
 
-type authSignUp struct {
-	// Depenencies
-}
+type authSignUp struct{}
 
 func newAuthSignUp() common.Route {
-	route := authSignUp{
-		// Dependencies
-	}
+	route := authSignUp{}
 
 	return common.Route{
 		Options: common.RouteOptions{

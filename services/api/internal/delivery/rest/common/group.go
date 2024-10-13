@@ -4,17 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type APIError struct {
-	StatusCode int
-	Error      string `json:"error"`
-}
-
 type Router = gin.IRouter
 
-type (
-	Handler      func(ctx *gin.Context) *APIError
-	ErrorHandler func(ctx *gin.Context, err *APIError)
-)
+type Handler func(ctx *gin.Context) *APIError
 
 type Group struct {
 	Prefix   string
@@ -33,28 +25,24 @@ type RouteOptions struct {
 	Middlewares  []Handler
 }
 
-func DefaultErrorHandler(ctx *gin.Context, err *APIError) {
-	if err == nil {
-		return
-	}
+func (r Route) Register(eh ErrorHandler, router Router) {
+	handlers := make([]Handler, len(r.Options.Middlewares)+1)
+	copy(handlers[:len(handlers)-1], r.Options.Middlewares)
 
-	ctx.JSON(err.StatusCode, err)
+	handlers[len(handlers)-1] = r.Handler
+
+	router.Handle(
+		r.Options.Method,
+		r.Options.RelativePath,
+		toGinHandlers(eh, handlers)...,
+	)
 }
 
 func (g Group) Register(eh ErrorHandler, root Router) {
 	router := root.Group(g.Prefix)
 
 	for _, route := range g.Routes {
-		handlers := make([]Handler, len(route.Options.Middlewares)+1)
-		copy(handlers[:len(handlers)-1], route.Options.Middlewares)
-
-		handlers[len(handlers)-1] = route.Handler
-
-		router.Handle(
-			route.Options.Method,
-			route.Options.RelativePath,
-			toGinHandlers(eh, handlers)...,
-		)
+		route.Register(eh, router)
 	}
 
 	for _, child := range g.Children {

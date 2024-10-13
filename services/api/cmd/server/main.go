@@ -43,8 +43,6 @@ func main() {
 		log.Fatalf("config: %s", err)
 	}
 
-	// start: app
-
 	if cfg.App.Mode == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -55,5 +53,5 @@ func main() {
 		lgr.Error("failed to start http server", slog.Any("error", err))
 	}
 
-	// end: app
+	// TODO: implement graceful shutdown
 }

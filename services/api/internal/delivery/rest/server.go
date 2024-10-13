@@ -53,7 +53,7 @@ func (s HTTPServer) Start() error {
 	root := s.router.Group(rootPrefix)
 
 	v1.NewGroup(s.router).Register(
-		common.DefaultErrorHandler, root,
+		s.errorHandler, root,
 	)
 
 	s.logger.Info("http server is listening", slog.String("addr", s.server.Addr))
@@ -69,4 +69,12 @@ func (s HTTPServer) Start() error {
 
 func (s HTTPServer) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
+}
+
+func (s HTTPServer) errorHandler(ctx *gin.Context, err *common.APIError) {
+	if err == nil {
+		return
+	}
+
+	ctx.JSON(err.StatusCode, err.ErrorPayload)
 }
