@@ -1,11 +1,14 @@
 version: '3'
 
 vars:
-  OAPI_CONFIG: "oapi-config.yaml"
-  OAPI_SPEC: "api/openapi-api-v1.yaml"
 
 tasks:
-  oapi-generate:
-    desc: "Generate server interface and models from OpenAPI specification."
+  swagger-generate:
+    desc: "Generate API Swagger documentation from code"
     cmds:
-      - go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen --config={{.OAPI_CONFIG}} {{.OAPI_SPEC}}
+      - swag init --dir internal/delivery/rest/v1 -g root.go -o internal/delivery/rest/v1/docs # v1
+
+  swagger-fmt:
+    desc: "Format Swagger documentation comments in code"
+    cmds:
+      - swag fmt

@@ -26,7 +26,8 @@ type Config struct {
 	}
 
 	Auth struct {
-		SessionTTL time.Duration `env:"AUTH_SESSION_TTL" env-default:"1h"`
+		SessionTTL    time.Duration `env:"AUTH_SESSION_TTL" env-default:"1h"`
+		SessionSecret string        `env:"AUTH_SESSION_SECRET" env-required:"true"`
 	}
 
 	Email struct {

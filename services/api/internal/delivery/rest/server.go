@@ -9,12 +9,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kvizyx/glich/services/api/internal/config"
+	"github.com/kvizyx/glich/services/api/internal/delivery/rest/common"
+	v1 "github.com/kvizyx/glich/services/api/internal/delivery/rest/v1"
 	"github.com/kvizyx/glich/shared/logger"
 )
 
+const rootPrefix = "/api"
+
 type HTTPServer struct {
 	server *http.Server
-	router *gin.Engine
+	router common.Router
 
 	logger logger.StructuralLogger
 }
@@ -46,6 +50,12 @@ func NewHTTPServer(
 }
 
 func (s HTTPServer) Start() error {
+	root := s.router.Group(rootPrefix)
+
+	v1.NewGroup(s.router).Register(
+		common.DefaultErrorHandler, root,
+	)
+
 	s.logger.Info("http server is listening", slog.String("addr", s.server.Addr))
 
 	if err := s.server.ListenAndServe(); err != nil {

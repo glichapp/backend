@@ -5,6 +5,7 @@ import (
 	"log"
 	"log/slog"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kvizyx/glich/services/api/internal/config"
 	"github.com/kvizyx/glich/services/api/internal/delivery/rest"
 	sharedconfig "github.com/kvizyx/glich/shared/config"
@@ -20,8 +21,8 @@ var configs sharedconfig.FlagStringSlice
 func init() {
 	flag.Var(
 		&configs,
-		"config",
-		"path to the config with environment variables",
+		"env",
+		"path to the environment variables config file",
 	)
 
 	flag.Parse()
@@ -42,9 +43,17 @@ func main() {
 		log.Fatalf("config: %s", err)
 	}
 
+	// start: app
+
+	if cfg.App.Mode == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	httpServer := rest.NewHTTPServer(cfg, lgr)
 
 	if err = httpServer.Start(); err != nil {
 		lgr.Error("failed to start http server", slog.Any("error", err))
 	}
+
+	// end: app
 }

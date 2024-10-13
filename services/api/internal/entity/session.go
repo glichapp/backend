@@ -4,16 +4,24 @@ import "time"
 
 type SessionID = uint64
 
+type AuthType uint
+
+const (
+	AuthTypeSSO AuthType = iota
+	AuthTypeOIDC
+)
+
 type Session struct {
-	ID           SessionID
-	Token        string
-	AccessSource AccessSource
-	CreatedAt    time.Time
+	ID          SessionID
+	Token       string
+	Fingerprint Fingerprint
+	CreatedAt   time.Time
 }
 
-type AccessSource struct {
-	OS       string
-	Platform string
-	City     string
-	Country  string
+type Fingerprint struct {
+	OS        string
+	Platform  string
+	City      string
+	Country   string
+	IPAddress string
 }

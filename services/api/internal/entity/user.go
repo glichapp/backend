@@ -4,13 +4,6 @@ import "time"
 
 type UserID = uint64
 
-type AuthType uint
-
-const (
-	AuthTypeSSO AuthType = iota
-	AuthTypeOIDC
-)
-
 type User struct {
 	ID          UserID
 	Username    string
